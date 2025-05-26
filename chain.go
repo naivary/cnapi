@@ -7,7 +7,7 @@ import (
 
 type chain []func(http.Handler) http.Handler
 
-func (c chain) funcErr(fn FuncErr) http.Handler {
+func (c chain) thenFuncErr(fn funcErr) http.Handler {
 	return c.then(toHandler(fn))
 }
 

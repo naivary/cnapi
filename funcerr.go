@@ -2,9 +2,9 @@ package main
 
 import "net/http"
 
-type FuncErr func(w http.ResponseWriter, r *http.Request) error
+type funcErr func(w http.ResponseWriter, r *http.Request) error
 
-func toHandler(fn FuncErr) http.Handler {
+func toHandler(fn funcErr) http.Handler {
 	hl := func(w http.ResponseWriter, r *http.Request) {
 		err := fn(w, r)
 		if err == nil {

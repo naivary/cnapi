@@ -28,11 +28,16 @@ type Broker struct {
 	cfg *BrokerConfig
 }
 
-func NewBroker(cfg BrokerConfig) (*Broker, error) {
+func NewBroker(ctx context.Context, cfg BrokerConfig) (*Broker, error) {
 	br := &Broker{
 		cfg: &cfg,
 	}
-
+	if err := br.initSender(ctx); err != nil {
+		return nil, err
+	}
+	if err := br.initReceiver(ctx); err != nil {
+		return nil, err
+	}
 	return br, nil
 }
 

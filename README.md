@@ -22,3 +22,11 @@ practices in the web and open (de-facto) standards of the CNCF.
 ## Caching
 
 ## Kubernetes as Runtime
+
+## Testing
+
+### Unit
+
+### Load
+
+### Fault Tolerancy

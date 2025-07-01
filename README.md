@@ -21,4 +21,4 @@ practices in the web and open (de-facto) standards of the CNCF.
 
 ## Caching
 
-## Runtime (e.g. Kubernetes)
+## Kubernetes as Runtime

@@ -11,6 +11,10 @@ practices in the web and open (de-facto) standards of the CNCF.
 
 ## Principles of Chaos Engineering 
 
+### k8s chaos mesh
+
+### monkey choas (netflix)
+
 ## Telemetry 
 
 ## Configuration
@@ -30,3 +34,5 @@ practices in the web and open (de-facto) standards of the CNCF.
 ### Load
 
 ### Fault Tolerancy
+
+## 12FA

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 )
 
@@ -22,5 +23,10 @@ func run(
 	stdin io.Reader,
 	stdout, stderr io.Writer,
 ) error {
+	return nil
+}
+
+func newServer() http.Handler {
+	// TODO: http.Server defaults
 	return nil
 }

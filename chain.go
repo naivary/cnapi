@@ -7,10 +7,6 @@ import (
 
 type chain []func(http.Handler) http.Handler
 
-func (c chain) thenFuncErr(fn funcErr) http.Handler {
-	return c.then(toHandler(fn))
-}
-
 func (c chain) then(h http.Handler) http.Handler {
 	for _, mw := range slices.Backward(c) {
 		h = mw(h)

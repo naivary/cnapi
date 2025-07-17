@@ -3,6 +3,8 @@ package main
 type HTTPError struct {
 	StatusCode int
 	Msg        string
+	RequestID  string
+	SpanID     string
 }
 
 func NewHTTPError(msg string, status int) *HTTPError {

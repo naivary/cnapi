@@ -29,3 +29,9 @@ func authz(next http.Handler) http.Handler {
 func authn(next http.Handler) http.Handler {
 	return nil
 }
+
+// IsCanceled checks if the request context returns an error. If an error is
+// returned the processed response by the handler before will not be sent.
+func IsCanceled(next http.Handler) http.Handler {
+	return nil
+}

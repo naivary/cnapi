@@ -2,9 +2,13 @@ package main
 
 import "net/http"
 
+var _ http.Handler = (*Endpoint)(nil)
+
+// Endpoint implements http.Handler and allows to customize the used ErroHandler
+// for a given HandlerFuncErr.
 type Endpoint struct {
 	Handler HandlerFuncErr
-	Error   HTTPErrorHandler
+	Error   ErrorHandler
 }
 
 func (e Endpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -15,17 +19,22 @@ func (e Endpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	e.Error.ServeError(w, r, err)
 }
 
-type HTTPErrorHandler interface {
+// ErrorHandler is a handler used to handle errors which might occur in a
+// http.Handler.
+type ErrorHandler interface {
 	ServeError(w http.ResponseWriter, r *http.Request, err error)
 }
 
+var _ ErrorHandler = (ErrorHandlerFunc)(nil)
+
+// ErrorHandlerFunc is implementing ErrorHandler
 type ErrorHandlerFunc func(w http.ResponseWriter, r *http.Request, err error)
 
 func (e ErrorHandlerFunc) ServeError(w http.ResponseWriter, r *http.Request, err error) {
 	e(w, r, err)
 }
 
-func defaultErrorHandler() HTTPErrorHandler {
+func defaultErrorHandler() ErrorHandler {
 	fn := func(w http.ResponseWriter, r *http.Request, err error) {
 		httpErr, isHTTPErr := err.(*HTTPError)
 		msg := err.Error()
@@ -39,6 +48,12 @@ func defaultErrorHandler() HTTPErrorHandler {
 	return ErrorHandlerFunc(fn)
 }
 
+var _ http.Handler = (HandlerFuncErr)(nil)
+
+// HandlerFuncErr is an http.Handler allowing to return an error for idiomatic
+// error handling. If a non-nil error is returned it will be handled using the
+// `defaultErrorHandler`. If a custom ErrorHandler is needed you should return
+// an `Endpoint` with your custom ErrorHandlerFunc.
 type HandlerFuncErr func(w http.ResponseWriter, r *http.Request) error
 
 func (h HandlerFuncErr) ServeHTTP(w http.ResponseWriter, r *http.Request) {

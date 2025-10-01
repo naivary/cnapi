@@ -128,14 +128,41 @@ E2E should be prioritised over Unit Tests because they are closer to the end
 users experience. That might mean that Unit Tests implemented in TDD might be
 deleted afterwards in favor of E2E tests.
 
-## API-Gateways
-
 ## Telemetry
 
-Logging, Metrics, Traces
+Exporting telemetry data of your application is highly important to get insight
+into your application during production usage. Without it debugging, future
+development and optimazation will be hard to accomplish. For an API three
+telemetry kinds are relevant: Logs, Metrics and Traces. Starting with logs.
+
+A Log is a timestamped text record, either structured (recommended) or
+unstructured, with optional metadata. Go has a structured logging in the
+standard library but other popular options exists like `zap`. Independent of the
+library used to log it is important to log any data to `stdout/stderr`. Log
+management is not the responsiblity of the application. Especially in a
+Kubernetes environment there MUST exist a logging solution collecting relevant
+logs produced by the pods.
+
+Metrics are numerical measurements in layperson terms. Metrics play an important
+role in understanding why your application is working in a certain way. For
+example the amount of request over a defined period of time. The de-facto
+standard for metrics format and collection in cloud native environments is
+Prometheus a CNCF graduated project. Therefor it is important to make sure that
+the library used for instrumentation is Prometheus compatible.
+
+Traces give us the big picture of what happens when a request is made to an
+application. Whether your application is a monolith with a single database or a
+sophisticated mesh of services, traces are essential to understanding the full
+“path” a request takes in your application. It is even more important in
+distributed systems to be able to debug errors efficiently.
+
+For all three telemetries it's highly recommened to use OpenTelemetry to
+instrument the application. OpenTelemetry is a graduated CNCF project allowing
+for a standardized way to instrument applications for all three telemetrie
+kinds.
+
+## API-Gateways
 
 ## Authentication and Authorization
-
-## Encoding/Decoding and Validation
 
 ## Caching

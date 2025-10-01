@@ -2,7 +2,7 @@
 
 This repository contains a set of best practices from the web and foundations
 like CNCF providing a starting point to develop REST APIs in Go. To get started
-just clone the repository and make changes to it as it would be your project :).
+just clone the repository and make changes to it as it would be your project.
 
 ## Environment
 
@@ -161,8 +161,22 @@ instrument the application. OpenTelemetry is a graduated CNCF project allowing
 for a standardized way to instrument applications for all three telemetrie
 kinds.
 
-## API-Gateways
-
 ## Authentication and Authorization
 
-## Caching
+Implementing authentication and authorization is not the responsiblity of the
+service requiring it. There MUST be a dedicated central service for all other
+service to be able to use for authentication and authorization based on standard
+hardend protocols. These are mainly OpenID Connect and OAuth 2.0. Especially in
+combination with an [API-Gateway](#api-gateway) authentication and authorization
+SHOULD be handled centrally during ingress for all services.
+
+If no central API Gateway like Kong is used and your application requires
+authentication and authorization its recommended to use
+[coreos/go-oidc](https://github.com/coreos/go-oidc) and
+[golang.org/oauth2](https://pkg.go.dev/golang.org/x/oauth2) SHOULD be used.
+
+## API Gateway
+
+Caching, TLS termination etc.
+
+## mTLS

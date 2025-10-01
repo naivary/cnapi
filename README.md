@@ -95,6 +95,17 @@ artifact based on (comment) markers.
 
 ## Validation
 
+Validation is a crucial part of any HTTP request. Users can provide malicous
+content or mismatch information. Therefor it is important to validate the
+integrity of the payload before processing the request.
+
+One easy approach to validate data is using a common interface for it. This
+project provides the `Validator` interface in `validator.go`. The validator
+takes in a context and provides feedback of the validations in form of a map. If
+the returned map is empty then the validation was successfull. Combining this
+approach with a JSON Schema is allowing for the most flexibile and industry
+standard based solution.
+
 ## Testing
 
 Unit, E2E, Load

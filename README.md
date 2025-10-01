@@ -108,7 +108,25 @@ standard based solution.
 
 ## Testing
 
-Unit, E2E, Load
+Testing is a crucial part of software development. Without it we cannot have any
+confident in the funtionality of the application and development will be
+staggered because of fear of regression. Testing can be done with different
+goals is mind. For example unit tests assure that the smallest unit is working,
+End-to-End (E2E) assure that every component involved in the request is
+functioning correctly or load test assure that the application can scale
+correclty.
+
+Using the concept of Test driven development (TDD) makes it possible to
+implement Unit Tests while implementing needed funtionality for the API.
+
+E2E are a bit trickier because we need to wait for the server and it's
+dependencies to be ready for incoming requests. For that the `probe` package can
+be used. The package allows you to wait until the server is ready using public
+faced API endpoints like `/readyz` or `/healthz` to check for readiness.
+
+E2E should be prioritised over Unit Tests because they are closer to the end
+users experience. That might mean that Unit Tests implemented in TDD might be
+deleted afterwards in favor of E2E tests.
 
 ## API-Gateways
 

@@ -33,7 +33,7 @@ In most cases containers are not running without an orchestrater like
 Kubernetes. These have built-in support for discovering service. In Kubernetes
 this is done by creating an `Service` object. Applications which need to connect
 to that service will be provided with the domain specific connection string
-using environment variables, ConfigMaps, or CLI flags.
+using environment variables, or CLI flags (see: [Config](#configuration))
 
 ## API-Gateways
 

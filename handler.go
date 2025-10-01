@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/naivary/cnapi/httperror"
+)
 
 var _ http.Handler = (*Endpoint)(nil)
 
@@ -36,7 +40,7 @@ func (e ErrorHandlerFunc) ServeError(w http.ResponseWriter, r *http.Request, err
 
 func defaultErrorHandler() ErrorHandler {
 	fn := func(w http.ResponseWriter, r *http.Request, err error) {
-		httpErr, isHTTPErr := err.(*HTTPError)
+		httpErr, isHTTPErr := err.(*httperror.HTTPError)
 		msg := err.Error()
 		code := http.StatusInternalServerError
 		if isHTTPErr {

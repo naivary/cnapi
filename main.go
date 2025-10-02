@@ -29,19 +29,16 @@ func run(
 ) error {
 	interuptCtx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
-	baseCtx, stop := context.WithCancel(ctx)
-	defer stop()
-	addr := net.JoinHostPort(getenv("host"), getenv("port"))
-	// TODO: Timeout defaults
+	addr := net.JoinHostPort("", "9443")
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: newHandler(),
 		BaseContext: func(net.Listener) context.Context {
-			return baseCtx
+			return interuptCtx
 		},
 	}
 	go func() {
-		slog.Info("Server started!", "port", 7443)
+		slog.Info("Server started!", "port", "9443")
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			panic(err)
 		}
@@ -51,7 +48,6 @@ func run(
 	<-interuptCtx.Done()
 	slog.Info("Interrupted signal received. Gracefully shutting down server....")
 	cancel() // instantly stop the application on further interrupt signals
-	stop()   // signal all handlers that the server is shutting down
 	// new context needed to force shutdown after timeout
 	shutdownCtx, shutdown := context.WithTimeout(ctx, 15*time.Second)
 	defer shutdown()

@@ -21,22 +21,19 @@ func TestLivez(t *testing.T) {
 			code: http.StatusOK,
 		},
 	}
-
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	t.Cleanup(cancel)
 	go run(ctx, os.Args, os.Getenv, os.Stdin, os.Stdout, os.Stderr)
-	r, err := http.NewRequest(http.MethodGet, "http://localhost:6443/readyz", nil)
+	r, err := http.NewRequest(http.MethodGet, "http://localhost:9443/readyz", nil)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 		t.FailNow()
-
 	}
 	status, err := probe.DoHTTP(r, 5*time.Second)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 		t.FailNow()
-
 	}
 	if status == probe.Failed {
 		t.Errorf("probe failed.")
@@ -50,9 +47,13 @@ func TestLivez(t *testing.T) {
 				t.Errorf("unexpected error: %s", err)
 				t.FailNow()
 			}
-			_, err = cl.Do(r)
+			res, err := cl.Do(r)
 			if err != nil {
 				t.Errorf("unexpected error: %s", err)
+				t.FailNow()
+			}
+			if res.StatusCode != tc.code {
+				t.Errorf("codes differ. Got: %d; Want: %d", res.StatusCode, tc.code)
 				t.FailNow()
 			}
 		})

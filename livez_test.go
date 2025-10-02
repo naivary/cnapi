@@ -32,7 +32,7 @@ func TestLivez(t *testing.T) {
 		t.FailNow()
 
 	}
-	status, err := probe.HTTP(r, 5*time.Second)
+	status, err := probe.DoHTTP(r, 5*time.Second)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 		t.FailNow()

@@ -48,8 +48,8 @@ func run(
 	// wait for SIGINT/SIGTERM signal to start graceful shutdown procedure
 	<-interuptCtx.Done()
 	slog.Info("Interrupted signal received. Gracefully shutting down server....")
-	cancel() // cancel to instantly stop the application on further interrupt signals
-	stop()   // cancel to signal all handlers that the server is shutting down
+	cancel() // instantly stop the application on further interrupt signals
+	stop()   // signal all handlers that the server is shutting down
 	// new context needed to force shutdown after timeout
 	shutdownCtx, shutdown := context.WithTimeout(ctx, 15*time.Second)
 	defer shutdown()

@@ -1,29 +1,34 @@
 package probe
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"time"
 )
 
-type Status int
-
-const (
-	Success = iota + 1
-	Failed
-)
-
 func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duration) (Status, error) {
-	start := time.Now()
-	for now := time.Now(); start.Add(timeout).Before(now); {
-		res, err := client.Do(r)
+	ctx, cancel := context.WithTimeout(r.Context(), timeout)
+	defer cancel()
+	req := r.Clone(ctx)
+	for {
+		res, err := client.Do(req)
 		if err != nil {
+			if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+				return Failed, fmt.Errorf("request timed out after %v: %w", timeout, err)
+			}
 			return Failed, err
 		}
+		res.Body.Close()
 		if isSuccessful(res.StatusCode) {
 			return Success, nil
 		}
+		if ctx.Err() != nil {
+			return Failed, ctx.Err()
+		}
+		time.Sleep(100 * time.Millisecond)
 	}
-	return Failed, nil
 }
 
 func DoHTTP(r *http.Request, timeout time.Duration) (Status, error) {

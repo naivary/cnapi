@@ -1,4 +1,4 @@
-package httperror
+package main
 
 type HTTPError struct {
 	StatusCode int

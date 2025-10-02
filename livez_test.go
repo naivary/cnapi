@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
@@ -33,7 +32,7 @@ func TestLivez(t *testing.T) {
 		t.FailNow()
 
 	}
-	status, err := probe.DoHTTP(r, 5*time.Second)
+	status, err := probe.HTTP(r, 5*time.Second)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 		t.FailNow()
@@ -56,30 +55,6 @@ func TestLivez(t *testing.T) {
 				t.Errorf("unexpected error: %s", err)
 				t.FailNow()
 			}
-		})
-	}
-}
-
-func TestReadyz(t *testing.T) {
-	tests := []struct {
-		name string
-		r    *http.Request
-		code int
-	}{
-		{
-			name: "readiness",
-			r:    httptest.NewRequest(http.MethodGet, "/readyz", nil),
-			code: http.StatusOK,
-		},
-	}
-
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	t.Cleanup(cancel)
-	go run(ctx, os.Args, os.Getenv, os.Stdin, os.Stdout, os.Stderr)
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
 		})
 	}
 }

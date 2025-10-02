@@ -58,7 +58,7 @@ func TestDoHTTP(t *testing.T) {
 				t.Errorf("unexpected error: %s", err)
 				t.FailNow()
 			}
-			status, _ := DoHTTPWithClient(req, server.Client(), tc.timeout)
+			status, _ := HTTPWithClient(req, server.Client(), tc.timeout)
 			if status != tc.status {
 				t.Errorf("status not expected. got: %d; wanted: %d", status, tc.status)
 			}

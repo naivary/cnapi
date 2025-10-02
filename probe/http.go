@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duration) (Status, error) {
+func HTTPWithClient(r *http.Request, client *http.Client, timeout time.Duration) (Status, error) {
 	ctx, cancel := context.WithTimeout(r.Context(), timeout)
 	defer cancel()
 	req := r.Clone(ctx)
@@ -31,9 +31,9 @@ func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duratio
 	}
 }
 
-func DoHTTP(r *http.Request, timeout time.Duration) (Status, error) {
+func HTTP(r *http.Request, timeout time.Duration) (Status, error) {
 	cl := defaultClient()
-	return DoHTTPWithClient(r, cl, timeout)
+	return HTTPWithClient(r, cl, timeout)
 }
 
 // isSuccessCode returns true if the code is any of the 200 codes

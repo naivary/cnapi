@@ -12,6 +12,12 @@ workloads. Given these circumntances it is save to say that Kubernetes is the
 runtime of the Cloud and applications should be tailored to excel in these
 conditions.
 
+Furthermore, it is highly recommended for your dev environment to be identical
+to your production environment to be more confident in your development and
+tests. Great tools for local Kubernetes environments are `minikube` and `k3s`.
+`kind` is anohter option but I woudln't recommended it because not all
+functionalities are fully available especially in the storage realm.
+
 ## Stateless
 
 Applications in containers execl when they are stateless. Meaning no data is
@@ -176,6 +182,21 @@ authentication and authorization its recommended to use
 [golang.org/oauth2](https://pkg.go.dev/golang.org/x/oauth2) SHOULD be used.
 
 ## API Gateway
+
+An API Gateway acts as a mediator between client applications and the backend
+services within the microservices architecture. It is a software layer that
+functions as a single endpoint for various APIs performing tasks such as request
+composition, routing, and protocol translation. The API gateway controls
+requests and responses by managing the traffic of APIs while enforcing security
+policies. This simplifies API management by providing one central point of
+control which aids developers in focusing on building individual services rather
+than being encumbered by complex networks of APIs, including tasks such as user
+authentication and rate limiting (see:
+[Kong](https://konghq.com/blog/learning-center/what-is-an-api-gateway))
+
+Using an API Gateway is enabling you to centralized many common functionalities
+across all your services. In Kubernetes it is done by using the built-in kind
+`APIGateway` in combination with an ingress controller.
 
 Caching, TLS termination etc.
 

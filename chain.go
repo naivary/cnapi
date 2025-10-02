@@ -5,7 +5,7 @@ import (
 	"slices"
 )
 
-// chain is a list of middleware functions to execute in the given order. For
+// chain is a list of middleware functions to execute in the given order.
 type chain []func(http.Handler) http.Handler
 
 func (c chain) then(h http.Handler) http.Handler {

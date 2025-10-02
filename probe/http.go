@@ -36,11 +36,12 @@ func DoHTTP(r *http.Request, timeout time.Duration) (Status, error) {
 	return DoHTTPWithClient(r, cl, timeout)
 }
 
-// isSuccessCode returns true if the code is any of the 200 codes
+// isSuccessful returns true if the code is any of the 2XX codes
 func isSuccessful(code int) bool {
 	return code >= http.StatusOK && code <= http.StatusIMUsed
 }
 
+// TODO: FOLLOW redirects
 func defaultClient() *http.Client {
 	return &http.Client{}
 }

@@ -31,8 +31,10 @@ func run(
 	defer cancel()
 	baseCtx, stop := context.WithCancel(ctx)
 	defer stop()
+	addr := net.JoinHostPort(getenv("host"), getenv("port"))
+	// TODO: Timeout defaults
 	srv := &http.Server{
-		Addr:    ":7443",
+		Addr:    addr,
 		Handler: newHandler(),
 		BaseContext: func(net.Listener) context.Context {
 			return baseCtx

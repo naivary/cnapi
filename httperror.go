@@ -7,7 +7,7 @@ type HTTPError struct {
 	SpanID     string
 }
 
-func New(msg string, status int) *HTTPError {
+func NewHTTPError(msg string, status int) *HTTPError {
 	return &HTTPError{
 		Msg:        msg,
 		StatusCode: status,

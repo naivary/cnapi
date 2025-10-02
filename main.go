@@ -4,8 +4,12 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
+	"net"
 	"net/http"
 	"os"
+	"os/signal"
+	"time"
 )
 
 func main() {
@@ -23,10 +27,37 @@ func run(
 	stdin io.Reader,
 	stdout, stderr io.Writer,
 ) error {
-	return nil
+	interuptCtx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+	baseCtx, stop := context.WithCancel(ctx)
+	defer stop()
+	srv := &http.Server{
+		Addr:    ":7443",
+		Handler: newHandler(),
+		BaseContext: func(net.Listener) context.Context {
+			return baseCtx
+		},
+	}
+	go func() {
+		slog.Info("Server started!", "port", 7443)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			panic(err)
+		}
+	}()
+
+	// wait for SIGINT/SIGTERM signal to start graceful shutdown procedure
+	<-interuptCtx.Done()
+	slog.Info("Interrupted signal received. Gracefully shutting down server....")
+	cancel() // cancel to instantly stop the application on further interrupt signals
+	stop()   // cancel to signal all handlers that the server is shutting down
+	// new context needed to force shutdown after timeout
+	shutdownCtx, shutdown := context.WithTimeout(ctx, 15*time.Second)
+	defer shutdown()
+	return srv.Shutdown(shutdownCtx)
 }
 
-func newServer() http.Handler {
-	// TODO: http.Server defaults
-	return nil
+func newHandler() http.Handler {
+	mux := http.NewServeMux()
+	addRoutes(mux)
+	return mux
 }

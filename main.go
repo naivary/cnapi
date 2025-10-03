@@ -48,7 +48,8 @@ func run(
 	<-interuptCtx.Done()
 	slog.Info("Interrupted signal received. Gracefully shutting down server....")
 	cancel() // instantly stop the application on further interrupt signals
-	// new context needed to force shutdown after timeout
+
+	// new context to have finite shutdown time
 	shutdownCtx, shutdown := context.WithTimeout(ctx, 15*time.Second)
 	defer shutdown()
 	return srv.Shutdown(shutdownCtx)

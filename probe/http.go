@@ -14,7 +14,8 @@ func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duratio
 	req := r.Clone(ctx)
 	for {
 		res, err := client.Do(req)
-		if errors.Is(err, syscall.ECONNREFUSED) {
+		if errors.Is(err, syscall.ECONNREFUSED) && ctx.Err() == nil {
+			time.Sleep(250 * time.Millisecond)
 			continue
 		}
 		if err := ctx.Err(); err != nil {
@@ -24,7 +25,6 @@ func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duratio
 		if isSuccessful(res.StatusCode) {
 			return Success, nil
 		}
-		time.Sleep(250 * time.Millisecond)
 	}
 }
 

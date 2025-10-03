@@ -3,8 +3,8 @@ package probe
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
+	"syscall"
 	"time"
 )
 
@@ -14,20 +14,17 @@ func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duratio
 	req := r.Clone(ctx)
 	for {
 		res, err := client.Do(req)
-		if err != nil {
-			if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-				return Failed, fmt.Errorf("request timed out after %v: %w", timeout, err)
-			}
+		if errors.Is(err, syscall.ECONNREFUSED) {
+			continue
+		}
+		if err := ctx.Err(); err != nil {
 			return Failed, err
 		}
 		res.Body.Close()
 		if isSuccessful(res.StatusCode) {
 			return Success, nil
 		}
-		if ctx.Err() != nil {
-			return Failed, ctx.Err()
-		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(250 * time.Millisecond)
 	}
 }
 

@@ -29,7 +29,8 @@ func run(
 ) error {
 	interuptCtx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
-	addr := net.JoinHostPort("", "9443")
+	host, port := getenv("HOST"), getenv("PORT")
+	addr := net.JoinHostPort(host, port)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: newHandler(),
@@ -38,7 +39,7 @@ func run(
 		},
 	}
 	go func() {
-		slog.Info("Server started!", "port", "9443")
+		slog.Info("Server started!", "host", host, "port", port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			panic(err)
 		}

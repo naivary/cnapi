@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/naivary/cnapi/probe"
@@ -19,24 +21,45 @@ func NewTestServer(
 	getenv func(string) string,
 	stdin io.Reader,
 	stdout, stderr io.Writer,
-) (*http.Client, error) {
-	go run(ctx, args, getenv, stdin, stdout, stderr)
-	r, err := http.NewRequest(http.MethodGet, "http://localhost:9443/readyz", nil)
+) (string, error) {
+	port, err := freePort()
 	if err != nil {
-		return nil, err
+		return "", nil
+	}
+	baseURL := fmt.Sprintf("http://127.0.0.1:%d", port)
+	env := func(key string) string {
+		switch key {
+		case "HOST":
+			return "127.0.0.1"
+		case "PORT":
+			return fmt.Sprintf("%d", port)
+		default:
+			return getenv(key)
+		}
+	}
+	go run(ctx, args, env, stdin, stdout, stderr)
+
+	// wait until ready
+	readyzEndpoint, err := url.JoinPath(baseURL, "readyz")
+	if err != nil {
+		return "", err
+	}
+	r, err := http.NewRequest(http.MethodGet, readyzEndpoint, nil)
+	if err != nil {
+		return "", err
 	}
 	status, err := probe.DoHTTP(r, 5*time.Second)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if status == probe.Failed {
-		return nil, errProbeFailed
+		return "", errProbeFailed
 	}
-	cl := &http.Client{}
-	return cl, nil
+	return baseURL, nil
 }
 
-func randPort() (int, error) {
+// freePort returns a port which is probably useable.
+func freePort() (int, error) {
 	lis, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return -1, err

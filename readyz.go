@@ -6,7 +6,7 @@ func readyz() http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		if ctx.Err() != nil {
-			return ErrCtxDead
+			return ErrServerShutdown
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))

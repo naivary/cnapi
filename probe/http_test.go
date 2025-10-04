@@ -11,7 +11,7 @@ import (
 func newMux() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/healthz", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(3 * time.Second)
+		time.Sleep(1 * time.Second)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}))

@@ -38,7 +38,6 @@ func isSuccessful(code int) bool {
 	return code >= http.StatusOK && code <= http.StatusIMUsed
 }
 
-// TODO: FOLLOW redirects
 func defaultClient() *http.Client {
 	return &http.Client{}
 }

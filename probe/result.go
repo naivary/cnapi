@@ -1,6 +1,6 @@
 package probe
 
-type Status int
+type Result int
 
 const (
 	Success = iota + 1

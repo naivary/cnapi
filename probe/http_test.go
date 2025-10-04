@@ -10,7 +10,7 @@ import (
 
 func newMux() http.Handler {
 	mux := http.NewServeMux()
-	mux.Handle("/healthz", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/1s", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(1 * time.Second)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
@@ -30,19 +30,19 @@ func TestDoHTTP(t *testing.T) {
 		name    string
 		target  string
 		timeout time.Duration
-		status  Status
+		res     Result
 	}{
 		{
 			name:    "success",
-			target:  "/healthz",
+			target:  "/1s",
 			timeout: 5 * time.Second,
-			status:  Success,
+			res:     Success,
 		},
 		{
 			name:    "timeout",
 			target:  "/timeout",
 			timeout: 1 * time.Second,
-			status:  Failed,
+			res:     Failed,
 		},
 	}
 
@@ -58,9 +58,9 @@ func TestDoHTTP(t *testing.T) {
 				t.Errorf("unexpected error: %s", err)
 				t.FailNow()
 			}
-			status, _ := DoHTTPWithClient(req, server.Client(), tc.timeout)
-			if status != tc.status {
-				t.Errorf("status not expected. got: %d; wanted: %d", status, tc.status)
+			res, _ := DoHTTPWithClient(req, server.Client(), tc.timeout)
+			if res != tc.res {
+				t.Errorf("result not expected. got: %d; wanted: %d", res, tc.res)
 			}
 		})
 	}

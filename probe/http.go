@@ -13,7 +13,7 @@ import (
 //
 // It retries automatically if the connection is refused (for example, when the
 // target server is still starting up).
-func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duration) (Status, error) {
+func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duration) (Result, error) {
 	ctx, cancel := context.WithTimeout(r.Context(), timeout)
 	defer cancel()
 	req := r.Clone(ctx)
@@ -38,7 +38,7 @@ func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duratio
 //
 // It is a convenience wrapper around DoHTTPWithClient, which allows customization
 // of the HTTP client used for the request.
-func DoHTTP(r *http.Request, timeout time.Duration) (Status, error) {
+func DoHTTP(r *http.Request, timeout time.Duration) (Result, error) {
 	return DoHTTPWithClient(r, http.DefaultClient, timeout)
 }
 

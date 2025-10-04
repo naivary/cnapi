@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log/slog"
 	"net"
 	"net/http"
 	"os"
@@ -27,6 +26,7 @@ func run(
 	stdin io.Reader,
 	stdout, stderr io.Writer,
 ) error {
+	logger := newLogger(nil)
 	interuptCtx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 	host, port := getenv("HOST"), getenv("PORT")
@@ -39,7 +39,7 @@ func run(
 		},
 	}
 	go func() {
-		slog.Info("Server started!", "host", host, "port", port)
+		logger.Info("Server started!", "host", host, "port", port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			panic(err)
 		}
@@ -47,7 +47,7 @@ func run(
 
 	// wait for interrupt signal for graceful shutdown procedure
 	<-interuptCtx.Done()
-	slog.Info("Interrupted signal received. Gracefully shutting down server....")
+	logger.Info("Interrupt signal received. Gracefully shutting down server.")
 	cancel() // instantly stop the application on further interrupt signals
 
 	// new context to have finite shutdown time

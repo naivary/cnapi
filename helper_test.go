@@ -15,6 +15,22 @@ import (
 
 var errProbeFailed = errors.New("probe failed")
 
+// NewTestServer starts an HTTP server using the provided configuration parameters
+// and ensures that it is fully initialized before accepting incoming connections.
+//
+// It wraps the `run` function to create an environment that closely mirrors
+// production conditions. The function returns the server’s base URL, which can be
+// used to send requests during testing.
+//
+// Typical usage in a test:
+//
+//	ctx := context.Background()
+//	ctx, cancel := context.WithCancel(ctx)
+//	t.Cleanup(cancel)
+//
+//	baseURL, err := NewTestServer(t, config)
+//	require.NoError(t, err)
+//	// The server is now ready to handle requests.
 func NewTestServer(
 	ctx context.Context,
 	args []string,

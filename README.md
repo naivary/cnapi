@@ -128,7 +128,7 @@ implement Unit Tests while implementing needed funtionality for the API.
 E2E are a bit trickier because we need to wait for the server and it's
 dependencies to be ready for incoming requests. For that the `probe` package can
 be used. The package allows you to wait until the server is ready using public
-faced API endpoints like `/readyz` or `/healthz` to check for readiness.
+faced API endpoints like `/readyz` or `/livez` to check for readiness.
 
 E2E should be prioritised over Unit Tests because they are closer to the end
 users experience. That might mean that Unit Tests implemented in TDD might be

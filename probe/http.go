@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+// DoHTTPWithClient sends a probe HTTP request using the provided client and waits
+// until the server responds successfully or the timeout expires.
+//
+// It retries automatically if the connection is refused (for example, when the
+// target server is still starting up).
 func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duration) (Status, error) {
 	ctx, cancel := context.WithTimeout(r.Context(), timeout)
 	defer cancel()
@@ -28,16 +33,19 @@ func DoHTTPWithClient(r *http.Request, client *http.Client, timeout time.Duratio
 	}
 }
 
+// DoHTTP sends an HTTP probe request using the default HTTP client and returns the
+// resulting Status and any error encountered.
+//
+// It is a convenience wrapper around DoHTTPWithClient, which allows customization
+// of the HTTP client used for the request.
 func DoHTTP(r *http.Request, timeout time.Duration) (Status, error) {
-	cl := defaultClient()
-	return DoHTTPWithClient(r, cl, timeout)
+	return DoHTTPWithClient(r, http.DefaultClient, timeout)
 }
 
-// isSuccessful returns true if the code is any of the 2XX codes
+// isSuccessful reports whether the given HTTP status code indicates success.
+//
+// A status code is considered successful if it falls within the 2xx range
+// (i.e., from http.StatusOK to http.StatusIMUsed, inclusive).
 func isSuccessful(code int) bool {
 	return code >= http.StatusOK && code <= http.StatusIMUsed
-}
-
-func defaultClient() *http.Client {
-	return &http.Client{}
 }

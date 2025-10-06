@@ -200,4 +200,16 @@ across all your services. In Kubernetes it is done by using the built-in kind
 
 Caching, TLS termination etc.
 
-## mTLS
+## Style Guide
+
+It's important to have a unified style in your ever growing codebase. If more
+people join they have their own ideas of how things should look like and it
+makes it harder to mantain and extend your code. An unified experience can be
+craeted by using style guides. These can be already existing internal ones or
+popular public ones like
+[Uber](https://github.com/uber-go/guide/blob/master/style.md) or
+[Google](https://google.github.io/styleguide/go/).
+
+Personally I like the Uber styleguide because it's easier to understand and
+provides great examples to go through but the decision is upto you and your
+company.

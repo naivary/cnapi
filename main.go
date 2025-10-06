@@ -30,9 +30,8 @@ func run(
 	interuptCtx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 	host, port := getenv("HOST"), getenv("PORT")
-	addr := net.JoinHostPort(host, port)
 	srv := &http.Server{
-		Addr:    addr,
+		Addr:    net.JoinHostPort(host, port),
 		Handler: newHandler(),
 		BaseContext: func(net.Listener) context.Context {
 			return interuptCtx
@@ -50,7 +49,7 @@ func run(
 	logger.Info("Interrupt signal received. Gracefully shutting down server.")
 	cancel() // instantly stop the application on further interrupt signals
 
-	// new context to have finite shutdown time
+	// new context to have a finite shutdown time
 	shutdownCtx, shutdown := context.WithTimeout(ctx, 15*time.Second)
 	defer shutdown()
 	return srv.Shutdown(shutdownCtx)

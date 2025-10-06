@@ -50,17 +50,17 @@ func TestDoHTTP(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			u, err := url.JoinPath(server.URL, tc.target)
 			if err != nil {
-				t.Errorf("unexpected error: %s", err)
+				t.Errorf("URL join path: %s", err)
 				t.FailNow()
 			}
 			req, err := http.NewRequest(http.MethodGet, u, nil)
 			if err != nil {
-				t.Errorf("unexpected error: %s", err)
+				t.Errorf("new request: %s", err)
 				t.FailNow()
 			}
 			res, _ := DoHTTPWithClient(req, server.Client(), tc.timeout)
 			if res != tc.res {
-				t.Errorf("result not expected. got: %d; wanted: %d", res, tc.res)
+				t.Errorf("probe result not expected. Got: %d; Want: %d", res, tc.res)
 			}
 		})
 	}

@@ -21,14 +21,15 @@ func TestLivez(t *testing.T) {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	t.Cleanup(cancel)
+
 	baseURL, err := NewTestServer(ctx, os.Args, os.Getenv, os.Stdin, os.Stdout, os.Stderr)
 	if err != nil {
-		t.Errorf("unexpected error: %s", err)
+		t.Errorf("new test sever: %s", err)
 		t.FailNow()
 	}
 	endpoint, err := url.JoinPath(baseURL, "livez")
 	if err != nil {
-		t.Errorf("unexpected error: %s", err)
+		t.Errorf("URL join path: %s", err)
 		t.FailNow()
 	}
 
@@ -37,12 +38,12 @@ func TestLivez(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			r, err := http.NewRequest(http.MethodGet, endpoint, nil)
 			if err != nil {
-				t.Errorf("unexpected error: %s", err)
+				t.Errorf("new request: %s", err)
 				t.FailNow()
 			}
 			res, err := cl.Do(r)
 			if err != nil {
-				t.Errorf("unexpected error: %s", err)
+				t.Errorf("do request: %s", err)
 				t.FailNow()
 			}
 			if res.StatusCode != tc.code {

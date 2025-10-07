@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -82,4 +84,21 @@ func freePort() (int, error) {
 	}
 	defer lis.Close()
 	return lis.Addr().(*net.TCPAddr).Port, nil
+}
+
+func NewRequest[T any](method, url string, v T) *http.Request {
+	r, err := newRequest(method, url, v)
+	if err != nil {
+		panic(err)
+	}
+	return r
+}
+
+func newRequest[T any](method, url string, v T) (*http.Request, error) {
+	data, err := json.Marshal(&v)
+	if err != nil {
+		return nil, err
+	}
+	body := bytes.NewReader(data)
+	return http.NewRequest(method, url, body)
 }

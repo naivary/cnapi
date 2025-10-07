@@ -8,20 +8,20 @@ formatters:
   settings:
     gofmt:
       simplify: false
-        # Apply the rewrite rules to the source before reformatting.
-        # https://pkg.go.dev/cmd/gofmt
-        # Default: []
+      # Apply the rewrite rules to the source before reformatting.
+      # https://pkg.go.dev/cmd/gofmt
+      # Default: []
       rewrite-rules:
         - pattern: 'interface{}'
           replacement: 'any'
         - pattern: 'a[b:len(a)]'
           replacement: 'a[b:]'
     gofumpt:
-       module-path: github.com/naivary/codemark
-       extra-rules: true
+      module-path: github.com/naivary/cnapi
+      extra-rules: true
     goimports:
       local-prefixes:
-        - github.com/naivary/codemark
+        - github.com/naivary/cnapi
     golines:
       max-len: 150
       # Length of a tabulation.

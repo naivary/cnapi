@@ -22,7 +22,7 @@ func (e Endpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // ErrorHandler is a handler used to handle errors which might occur in a
-// http.Handler.
+// request handler.
 type ErrorHandler interface {
 	ServeError(w http.ResponseWriter, r *http.Request, err error)
 }

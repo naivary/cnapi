@@ -1,4 +1,4 @@
-package main
+package openapi
 
 type OpenAPISecurityType int
 

@@ -72,7 +72,7 @@ type OpenAPIServer struct {
 	URL         string
 	Description string
 	Name        string
-	Variables   map[string]OpenAPIServerVariable
+	Variables   map[string]*OpenAPIServerVariable
 }
 
 type OpenAPIServerVariable struct {

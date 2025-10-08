@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/naivary/cnapi/openapi"
 )
 
 var _ http.Handler = (*Endpoint)(nil)
@@ -11,6 +13,20 @@ var _ http.Handler = (*Endpoint)(nil)
 type Endpoint struct {
 	Handler HandlerFuncErr
 	Error   ErrorHandler
+	// OpenAPI relevant fields to generate documentation
+
+	Summary     string
+	Description string
+	Tags        []string
+	OperationID string
+	Deprecated  bool
+
+	Params      *openapi.OpenAPIParameter
+	RequestBody *openapi.OpenAPIRequestBody
+	Responses   map[string]*openapi.OpenAPIResponse
+	Callbacks   map[string]*openapi.OpenAPIPathItem
+	Security    openapi.OpenAPISecurityRequirement
+	Server      *openapi.OpenAPIServer
 }
 
 func (e Endpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {

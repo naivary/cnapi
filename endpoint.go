@@ -9,26 +9,36 @@ import (
 var _ http.Handler = (*Endpoint)(nil)
 
 // Endpoint implements http.Handler and allows to customize the used ErroHandler
-// for a given HandlerFuncErr.
+// for a given HandlerFuncErr. Furhtermore it allows you to define OpenAPI
+// documentation metadata to automatically generate OpenAPI specs.
+//
+// TODO: Callbacks
+// TODO: Servers
 type Endpoint struct {
+	// Handler to handle the incoming request.
 	Handler HandlerFuncErr
-	Error   ErrorHandler
+	// Error is the handler used if the returned error of the Handler is
+	// non-nil.
+	Error ErrorHandler
 
 	Pattern string
-
-	// OpenAPI relevant fields to generate documentation
-	Summary     string
+	// Summary included in the OpenAPI spec.
+	Summary string
+	// Description included in the OpenAPI spec. By default it will use the doc
+	// string of your `Handler`.
 	Description string
-	Tags        []string
+	// Tags included in the OpenAPI spec.
+	Tags []string
+	// OperationID is used to generate the OpenAPI spec. By default it will use
+	// the name of your `Handler` function.
 	OperationID string
-	Deprecated  bool
+	// Deprecated flags an endpoint as deprecated in the OpenAPI documentation.
+	Deprecated bool
 
-	Params      *openapi.OpenAPIParameter
-	RequestBody any
-	Responses   map[string]*openapi.OpenAPIResponse
-	Callbacks   map[string]*openapi.OpenAPIPathItem
-	Security    openapi.OpenAPISecurityRequirement
-	Server      *openapi.OpenAPIServer
+	Params      []*openapi.Parameter
+	RequestBody *openapi.RequestBody
+	Responses   map[string]*openapi.Response
+	Security    openapi.SecurityRequirement
 }
 
 func (e Endpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {

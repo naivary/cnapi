@@ -23,11 +23,11 @@ func metrics() http.Handler {
 		Tags:        []string{"metrics"},
 		OperationID: "<name of the method>",
 		RequestBody: CreateMetricRequest{},
-		Responses: map[string]*openapi.OpenAPIResponse{
+		Responses: map[string]*openapi.Response{
 			"200": {
 				Summary:     "Successfull Response", // default,
 				Description: "Successfull Response", // default,
-				Headers: map[string]*openapi.OpenAPIHeader{},
+				Headers:     map[string]*openapi.Header{},
 			},
 		},
 	}

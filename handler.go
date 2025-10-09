@@ -13,8 +13,10 @@ var _ http.Handler = (*Endpoint)(nil)
 type Endpoint struct {
 	Handler HandlerFuncErr
 	Error   ErrorHandler
-	// OpenAPI relevant fields to generate documentation
 
+	Pattern string
+
+	// OpenAPI relevant fields to generate documentation
 	Summary     string
 	Description string
 	Tags        []string
@@ -22,7 +24,7 @@ type Endpoint struct {
 	Deprecated  bool
 
 	Params      *openapi.OpenAPIParameter
-	RequestBody *openapi.OpenAPIRequestBody
+	RequestBody any
 	Responses   map[string]*openapi.OpenAPIResponse
 	Callbacks   map[string]*openapi.OpenAPIPathItem
 	Security    openapi.OpenAPISecurityRequirement

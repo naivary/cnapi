@@ -35,7 +35,7 @@ type Endpoint struct {
 	// Deprecated flags an endpoint as deprecated in the OpenAPI documentation.
 	Deprecated bool
 
-	Params      []*openapi.Parameter
+	Parameters  []*openapi.Parameter
 	RequestBody *openapi.RequestBody
 	Responses   map[string]*openapi.Response
 	Security    openapi.SecurityRequirement

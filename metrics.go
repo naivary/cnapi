@@ -6,6 +6,11 @@ import (
 	"github.com/naivary/cnapi/openapi"
 )
 
+const (
+	_required = true
+	_optional = false
+)
+
 const _regParam = `\{([^\/{}]+)\}`
 
 type (
@@ -25,11 +30,15 @@ func metrics() http.Handler {
 		Description: "<go doc string of the method if empty>",
 		Tags:        []string{"metrics"},
 		OperationID: "<name of the method>",
-		RequestBody: openapi.Request("", false, new(CreateMetricRequest)),
+		RequestBody: openapi.NewReqBody("", false, new(CreateMetricRequest)),
 		Responses: map[string]*openapi.Response{
-			"200": openapi.Res("", "", new(CreateMetricResponse),
-				openapi.NewHeader("", true, openapi.STRING).Deprecate(),
-			),
+			"200": openapi.NewResponse("", new(CreateMetricRequest)).
+				AddHeader("", openapi.NewHeader("", _optional)).
+				AddHeader("", openapi.NewHeader("", _optional)),
+			"404": openapi.NewResponse("", nil),
+		},
+		Parameters: []*openapi.Parameter{
+			openapi.NewQueryParam("id", "", _required),
 		},
 	}
 }

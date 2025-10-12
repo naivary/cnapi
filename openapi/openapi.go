@@ -23,17 +23,6 @@ const (
 	S_COOKIE
 )
 
-type In int
-
-const (
-	PATH In = iota + 1
-	QUERY
-	// TODO: Check when Query String is needed
-	// QUERYSTR
-	HEADER
-	COOKIE
-)
-
 type OpenAPI struct {
 	Version           string `json:"openapi"`
 	Self              string `json:"$self"`
@@ -120,27 +109,6 @@ type ExternalDoc struct {
 	Description string
 }
 
-type Parameter struct {
-	Ref             string `json:"$ref"`
-	Name            string
-	In              In
-	Description     string
-	Required        bool
-	Deprecated      bool
-	AllowEmptyValue bool
-	Example         any
-	Examples        map[string]*Example
-
-	// Used with Schema
-	Schema        *Schema
-	Style         Style
-	Explode       bool
-	AllowReserved bool
-
-	// Used with content
-	Content map[string]*MediaType
-}
-
 type Example struct {
 	Ref             string `json:"$ref"`
 	Summary         string
@@ -171,36 +139,6 @@ type Encoding struct {
 	Encoding       map[string]*Encoding
 	PrefixEncoding []*Encoding
 	ItemEncoding   *Encoding
-}
-
-type Header struct {
-	Description string
-	Required    bool
-	Deprecated  bool
-	Example     any
-	Examples    map[string]*Example
-
-	// Fixed Fields of schema
-	Schema  *Schema
-	Style   Style
-	Explode bool
-
-	Content map[string]*MediaType
-}
-
-type RequestBody struct {
-	Description string
-	Required    bool
-	Content     map[string]*MediaType
-}
-
-type Response struct {
-	Ref         string `json:"$ref"`
-	Summary     string
-	Description string
-	Headers     map[string]*Header
-	Content     map[string]*MediaType
-	Links       map[string]*Link
 }
 
 type Link struct {

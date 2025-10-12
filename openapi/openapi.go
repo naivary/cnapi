@@ -1,5 +1,14 @@
 package openapi
 
+const _contentTypeJSON = "application/json"
+
+type HeaderDataType int
+
+const (
+	STRING = iota + 1
+	INT
+)
+
 type SecurityType int
 
 const (
@@ -160,7 +169,9 @@ type MediaType struct {
 	ItemEncoding   *Encoding
 }
 
-type Schema struct{}
+type Schema struct {
+	Ref string `json:"$ref"`
+}
 
 type Encoding struct {
 	ContentType    string
@@ -183,6 +194,16 @@ type Header struct {
 	Explode bool
 
 	Content map[string]*MediaType
+}
+
+func (h *Header) Deprecate() *Header {
+	h.Deprecated = true
+	return h
+}
+
+func (h *Header) Exploded() *Header {
+	h.Explode = true
+	return h
 }
 
 type RequestBody struct {
@@ -261,4 +282,33 @@ type OAuthFlow struct {
 	TokenURL               string
 	RefreshURL             string
 	Scopes                 map[string]string
+}
+
+func Request(desc string, required bool, model any) *RequestBody {
+	return &RequestBody{
+		Description: desc,
+		Required:    required,
+		Content: map[string]*MediaType{
+			_contentTypeJSON: {
+				Schema: &Schema{Ref: "#/components/schemas/<model-name>"},
+			},
+		},
+	}
+}
+
+func Res(desc, summary string, model any, headers ...*Header) *Response {
+	res := &Response{
+		Description: desc,
+		Summary:     summary,
+	}
+	return res
+}
+
+func NewHeader(desc string, required bool, dataType HeaderDataType) *Header {
+	h := &Header{
+		Description: desc,
+		Required:    required,
+		Deprecated:  deprecated,
+	}
+	return h
 }

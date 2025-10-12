@@ -8,7 +8,10 @@ import (
 
 const _regParam = `\{([^\/{}]+)\}`
 
-type CreateMetricRequest struct{}
+type (
+	CreateMetricRequest  struct{}
+	CreateMetricResponse struct{}
+)
 
 func metrics() http.Handler {
 	fn := HandlerFuncErr(func(w http.ResponseWriter, r *http.Request) error {
@@ -22,13 +25,11 @@ func metrics() http.Handler {
 		Description: "<go doc string of the method if empty>",
 		Tags:        []string{"metrics"},
 		OperationID: "<name of the method>",
-		RequestBody: CreateMetricRequest{},
+		RequestBody: openapi.Request("", false, new(CreateMetricRequest)),
 		Responses: map[string]*openapi.Response{
-			"200": {
-				Summary:     "Successfull Response", // default,
-				Description: "Successfull Response", // default,
-				Headers:     map[string]*openapi.Header{},
-			},
+			"200": openapi.Res("", "", new(CreateMetricResponse),
+				openapi.NewHeader("", true, openapi.STRING).Deprecate(),
+			),
 		},
 	}
 }

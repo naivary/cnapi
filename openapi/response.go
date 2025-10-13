@@ -1,28 +1,33 @@
 package openapi
 
 type Response struct {
-	Ref         string `json:"$ref"`
-	Summary     string
-	Description string
-	Headers     map[string]*Header
-	Content     map[string]*MediaType
-	Links       map[string]*Link
+	Ref         string                `json:"$ref,omitempty"`
+	Summary     string                `json:"summary,omitempty"`
+	Description string                `json:"description,omitempty"`
+	Headers     map[string]*Header    `json:"headers,omitempty"`
+	Content     map[string]*MediaType `json:"content,omitempty"`
+	Links       map[string]*Link      `json:"links,omitempty"`
+}
+
+func NewResRef(ref string) *Response {
+	return &Response{Ref: ref}
 }
 
 func NewResponse(desc string, model any) *Response {
 	res := &Response{
-		Headers: make(map[string]*Header),
-		Links:   make(map[string]*Link),
+		Description: desc,
+		Headers:     make(map[string]*Header),
+		Content: map[string]*MediaType{
+			"application/json": {
+				Schema: &Schema{Ref: componentRef("schemas", typeName(model))},
+			},
+		},
+		Links: make(map[string]*Link),
 	}
 	return res
 }
 
 func (r *Response) AddHeader(name string, h *Header) *Response {
 	r.Headers[name] = h
-	return r
-}
-
-func (r *Response) RefTo(ref string) *Response {
-	r.Ref = ref
 	return r
 }

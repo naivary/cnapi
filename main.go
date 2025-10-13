@@ -1,4 +1,4 @@
-//go:generate codemark gen -o openapi:fs ./... -- --fs.path=api/schemas
+//go:generate codemark gen -o openapi:fs ./... -- --fs.path=api/openapi/schemas
 package main
 
 import (

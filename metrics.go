@@ -11,12 +11,13 @@ const (
 	_optional = false
 )
 
-const _regParam = `\{([^\/{}]+)\}`
+type CreateMetricResponse struct{}
 
-type (
-	CreateMetricRequest  struct{}
-	CreateMetricResponse struct{}
-)
+// +openapi:schema:description="something"
+type CreateMetricRequest struct {
+	// +openapi:schema:required
+	Name string
+}
 
 func metrics() http.Handler {
 	fn := HandlerFuncErr(func(w http.ResponseWriter, r *http.Request) error {
@@ -27,9 +28,9 @@ func metrics() http.Handler {
 		Error:       defaultErrorHandler(),
 		Pattern:     "GET /metrics/{definition}",
 		Summary:     "Get the metrics of the documetnation",
-		Description: "<go doc string of the method if empty>",
+		Description: "<required>",
 		Tags:        []string{"metrics"},
-		OperationID: "<name of the method>",
+		OperationID: "<name of the method if empty>",
 		RequestBody: openapi.NewReqBody("", false, new(CreateMetricRequest)),
 		Responses: map[string]*openapi.Response{
 			"200": openapi.NewResponse("", new(CreateMetricRequest)).

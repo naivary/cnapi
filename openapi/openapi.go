@@ -24,182 +24,237 @@ const (
 )
 
 type OpenAPI struct {
-	Version           string `json:"openapi"`
-	Self              string `json:"$self"`
-	Info              *Info
-	JSONSchemaDialect string
-	Servers           []*Server
-	Paths             map[string]*PathItem
-	Webhooks          map[string]*PathItem
-	Security          []*SecurityRequirement
-	Tags              []*Tag
-	ExternalDocs      *ExternalDoc
+	Version           string                 `json:"openapi"`
+	Self              string                 `json:"$self,omitempty"`
+	Info              *Info                  `json:"info"`
+	JSONSchemaDialect string                 `json:"jsonSchemaDialect,omitempty"`
+	Servers           []*Server              `json:"servers,omitempty"`
+	Paths             map[string]*PathItem   `json:"paths"`
+	Webhooks          map[string]*PathItem   `json:"webhooks,omitempty"`
+	Components        *Components            `json:"components,omitempty"`
+	Security          []*SecurityRequirement `json:"security,omitempty"`
+	Tags              []*Tag                 `json:"tags,omitempty"`
+	ExternalDocs      *ExternalDoc           `json:"externalDocs,omitempty"`
+}
+
+func New(info *Info) *OpenAPI {
+	return &OpenAPI{
+		Version: "3.2.0",
+		Info:    info,
+		Paths:   make(map[string]*PathItem),
+		Components: &Components{
+			Schemas: make(map[string]*Schema),
+		},
+	}
 }
 
 type Info struct {
-	Version        string
-	Title          string
-	Summary        string
-	Description    string
-	TermsOfService string
-	Contact        *Contact
-	License        *License
+	Version        string   `json:"version"`
+	Title          string   `json:"title"`
+	Summary        string   `json:"summary,omitempty"`
+	Description    string   `json:"description,omitempty"`
+	TermsOfService string   `json:"termsOfService,omitempty"`
+	Contact        *Contact `json:"contact,omitempty"`
+	License        *License `json:"license,omitempty"`
 }
 
 type Contact struct {
-	Name  string
-	URL   string
-	Email string
+	Name  string `json:"name,omitempty"`
+	URL   string `json:"url,omitempty"`
+	Email string `json:"email,omitempty"`
 }
 
 type License struct {
-	Name       string
-	Identifier string
-	URL        string
+	Name       string `json:"name"`
+	Identifier string `json:"identifier,omitempty"`
+	URL        string `json:"url,omitempty"`
 }
 
 type Server struct {
-	URL         string
-	Description string
-	Name        string
-	Variables   map[string]*ServerVariable
+	URL         string                     `json:"url"`
+	Description string                     `json:"description,omitempty"`
+	Name        string                     `json:"name,omitempty"`
+	Variables   map[string]*ServerVariable `json:"variables,omitempty"`
 }
 
 type ServerVariable struct {
-	Default     string
-	Enum        []string
-	Description string
-}
-
-type PathItem struct {
-	Ref                  string                `json:"$ref"`
-	Summary              string                `json:"summary"`
-	Description          string                `json:"description"`
-	Get                  *Operation            `json:"get"`
-	Put                  *Operation            `json:"put"`
-	Post                 *Operation            `json:"post"`
-	Delete               *Operation            `json:"delete"`
-	Options              *Operation            `json:"options"`
-	Head                 *Operation            `json:"head"`
-	Patch                *Operation            `json:"patch"`
-	Trace                *Operation            `json:"trace"`
-	Query                *Operation            `json:"query"`
-	AdditionalProperties map[string]*Operation `json:"additionalProperties"`
-	Servers              []*Server             `json:"servers"`
-	Parameters           []*Parameter          `json:"parameters"`
+	Default     string   `json:"default"`
+	Enum        []string `json:"enum,omitempty"`
+	Description string   `json:"description,omitempty"`
 }
 
 type Operation struct {
-	Tags         []string
-	Summary      string
-	Description  string
-	ExternalDocs *ExternalDoc
-	OperationID  string
-	Parameters   []*Parameter
-	RequestBody  *RequestBody
-	Responses    map[string]*Response
-	Callbacks    map[string]*PathItem
-	Deprecated   bool
-	Security     []SecurityRequirement
-	Servers      []*Server
+	Tags         []string              `json:"tags,omitempty"`
+	Summary      string                `json:"summary,omitempty"`
+	Description  string                `json:"description,omitempty"`
+	ExternalDocs *ExternalDoc          `json:"externalDocs,omitempty"`
+	OperationID  string                `json:"operationId,omitempty"`
+	Parameters   []*Parameter          `json:"parameters,omitempty"`
+	RequestBody  *RequestBody          `json:"requestBody,omitempty"`
+	Responses    map[string]*Response  `json:"responses"`
+	Callbacks    map[string]*PathItem  `json:"callbacks,omitempty"`
+	Deprecated   bool                  `json:"deprecated,omitempty"`
+	Security     []SecurityRequirement `json:"security,omitempty"`
+	Servers      []*Server             `json:"servers,omitempty"`
 }
 
 type ExternalDoc struct {
-	URL         string
-	Description string
+	URL         string `json:"url"`
+	Description string `json:"description,omitempty"`
 }
 
 type Example struct {
-	Ref             string `json:"$ref"`
-	Summary         string
-	Description     string
-	DataValue       any
-	SerializedValue string
-	ExternalValue   string
-	Value           any
+	Ref             string `json:"$ref,omitempty"`
+	Summary         string `json:"summary,omitempty"`
+	Description     string `json:"description,omitempty"`
+	DataValue       any    `json:"dataValue,omitempty"`
+	SerializedValue string `json:"serializedValue,omitempty"`
+	ExternalValue   string `json:"externalValue,omitempty"`
+	Value           any    `json:"value,omitempty"`
 }
 
 type MediaType struct {
-	Schema         *Schema
-	ItemSchema     *Schema
-	Example        any
-	Examples       map[string]*Example
-	Encoding       map[string]*Encoding
-	PrefixEncoding []*Encoding
-	ItemEncoding   *Encoding
+	Schema         *Schema              `json:"schema,omitempty"`
+	ItemSchema     *Schema              `json:"itemSchema,omitempty"`
+	Example        any                  `json:"example,omitempty"`
+	Examples       map[string]*Example  `json:"examples,omitempty"`
+	Encoding       map[string]*Encoding `json:"encoding,omitempty"`
+	PrefixEncoding []*Encoding          `json:"prefixEncoding,omitempty"`
+	ItemEncoding   *Encoding            `json:"itemEncoding,omitempty"`
 }
 
+type JSONType string
+
+const (
+	InvalidType JSONType = "invalid"
+	NullType    JSONType = "null"
+	BooleanType JSONType = "boolean"
+	NumberType  JSONType = "number"
+	IntegerType JSONType = "integer"
+	StringType  JSONType = "string"
+	ArrayType   JSONType = "array"
+	ObjectType  JSONType = "object"
+)
+
 type Schema struct {
-	Ref string `json:"$ref"`
+	// metadata
+	ID    string   `json:"$id,omitzero"`
+	Draft string   `json:"$schema,omitzero"`
+	Ref   string   `json:"$ref,omitzero"`
+	Type  JSONType `json:"type,omitzero"`
+
+	OneOf []*Schema `json:"oneOf,omitzero"`
+	AnyOf []*Schema `json:"anyOf,omitzero"`
+	Not   *Schema   `json:"not,omitzero"`
+
+	// agnostic
+	Enum []any `json:"enum,omitzero"`
+
+	// annotations
+	Title      string `json:"title,omitzero"`
+	Desc       string `json:"description,omitzero"`
+	Examples   []any  `json:"examples,omitzero"`
+	Deprecated bool   `json:"deprecated,omitzero"`
+	WriteOnly  bool   `json:"writeOnly,omitzero"`
+	ReadOnly   bool   `json:"readOnly,omitzero"`
+	Default    string `json:"default,omitzero"`
+
+	// array
+	MaxItems    int64   `json:"maxItems,omitzero"`
+	MinItems    int64   `json:"minItems,omitzero"`
+	UniqueItems bool    `json:"uniqueItems,omitzero"`
+	Items       *Schema `json:"items,omitzero"`
+
+	// object
+	Properties           map[string]*Schema  `json:"properties,omitzero"`
+	Required             []string            `json:"required,omitzero"`
+	AdditionalProperties *Schema             `json:"additionalProperties,omitzero"`
+	PatternProperties    map[string]*Schema  `json:"patternProperties,omitzero,omitempty"`
+	DependentRequired    map[string][]string `json:"dependentRequired,omitzero,omitempty"`
+
+	// string
+	MinLength        int64  `json:"minLength,omitzero"`
+	MaxLength        int64  `json:"maxLength,omitzero"`
+	Pattern          string `json:"pattern,omitzero"`
+	ContentEncoding  string `json:"contentEnconding,omitzero"`
+	ContentMediaType string `json:"contentMediaType,omitzero"`
+	Format           string `json:"format,omitzero"`
+
+	// number
+	Maximum          int64 `json:"maximum,omitzero"`
+	Minimum          int64 `json:"minimum,omitzero"`
+	ExclusiveMaximum int64 `json:"exclusiveMaximum,omitzero"`
+	ExclusiveMinimum int64 `json:"exclusiveMinimum,omitzero"`
+	MultipleOf       int64 `json:"multipleOf,omitzero"`
 }
 
 type Encoding struct {
-	ContentType    string
-	Headers        map[string]*Header
-	Encoding       map[string]*Encoding
-	PrefixEncoding []*Encoding
-	ItemEncoding   *Encoding
+	ContentType    string               `json:"contentType,omitempty"`
+	Headers        map[string]*Header   `json:"headers,omitempty"`
+	Encoding       map[string]*Encoding `json:"encoding,omitempty"`
+	PrefixEncoding []*Encoding          `json:"prefixEncoding,omitempty"`
+	ItemEncoding   *Encoding            `json:"itemEncoding,omitempty"`
 }
 
 type Link struct {
-	OperationRef string
-	OperationID  string
-	Parameters   map[string]any
-	RequestBody  map[string]any
-	Description  string
-	Server       *Server
+	OperationRef string         `json:"operationRef,omitempty"`
+	OperationID  string         `json:"operationId,omitempty"`
+	Parameters   map[string]any `json:"parameters,omitempty"`
+	RequestBody  map[string]any `json:"requestBody,omitempty"`
+	Description  string         `json:"description,omitempty"`
+	Server       *Server        `json:"server,omitempty"`
 }
 
 type SecurityRequirement map[string][]string
 
 type Tag struct {
-	Name         string
-	Summary      string
-	Description  string
-	ExternalDocs *ExternalDoc
-	Parent       string
-	Kind         string
+	Name         string       `json:"name"`
+	Summary      string       `json:"summary,omitempty"`
+	Description  string       `json:"description,omitempty"`
+	ExternalDocs *ExternalDoc `json:"externalDocs,omitempty"`
+	Parent       string       `json:"parent,omitempty"`
+	Kind         string       `json:"kind,omitempty"`
 }
 
 type Components struct {
-	Schemas         map[string]*Schema
-	Responses       map[string]*Response
-	Parameters      map[string]*Parameter
-	Examples        map[string]*Example
-	RequestBodies   map[string]*RequestBody
-	Headers         map[string]*Header
-	SecuritySchemas map[string]*SecurityScheme
-	Links           map[string]*Link
-	Callbacks       map[string]*PathItem
-	PathItems       map[string]*PathItem
-	MediaTypes      map[string]*MediaType
+	Schemas         map[string]*Schema         `json:"schemas,omitempty"`
+	Responses       map[string]*Response       `json:"responses,omitempty"`
+	Parameters      map[string]*Parameter      `json:"parameters,omitempty"`
+	Examples        map[string]*Example        `json:"examples,omitempty"`
+	RequestBodies   map[string]*RequestBody    `json:"requestBodies,omitempty"`
+	Headers         map[string]*Header         `json:"headers,omitempty"`
+	SecuritySchemas map[string]*SecurityScheme `json:"securitySchemes,omitempty"`
+	Links           map[string]*Link           `json:"links,omitempty"`
+	Callbacks       map[string]*PathItem       `json:"callbacks,omitempty"`
+	PathItems       map[string]*PathItem       `json:"pathItems,omitempty"`
+	MediaTypes      map[string]*MediaType      `json:"mediaTypes,omitempty"`
 }
 
 type SecurityScheme struct {
-	Type             SecurityType
-	Description      string
-	Name             string
-	In               string
-	Scheme           string
-	BearerFormat     string
-	Flows            *OAuthFlows
-	OpenIDConnectURL string
-	OAuth2MetdataURL string
-	Deprecated       bool
+	Type             SecurityType `json:"type"`
+	Description      string       `json:"description,omitempty"`
+	Name             string       `json:"name,omitempty"`
+	In               string       `json:"in,omitempty"`
+	Scheme           string       `json:"scheme,omitempty"`
+	BearerFormat     string       `json:"bearerFormat,omitempty"`
+	Flows            *OAuthFlows  `json:"flows,omitempty"`
+	OpenIDConnectURL string       `json:"openIdConnectUrl,omitempty"`
+	OAuth2MetdataURL string       `json:"oauth2MetadataUrl,omitempty"`
+	Deprecated       bool         `json:"deprecated,omitempty"`
 }
 
 type OAuthFlows struct {
-	Implicit            *OAuthFlow
-	Password            *OAuthFlow
-	ClientCredentials   *OAuthFlow
-	AuthorizationCode   *OAuthFlow
-	DeviceAuthorization *OAuthFlow
+	Implicit            *OAuthFlow `json:"implicit,omitempty"`
+	Password            *OAuthFlow `json:"password,omitempty"`
+	ClientCredentials   *OAuthFlow `json:"clientCredentials,omitempty"`
+	AuthorizationCode   *OAuthFlow `json:"authorizationCode,omitempty"`
+	DeviceAuthorization *OAuthFlow `json:"deviceAuthorization,omitempty"`
 }
 
 type OAuthFlow struct {
-	AuthorizationURL       string
-	DeviceAuthorizationURL string
-	TokenURL               string
-	RefreshURL             string
-	Scopes                 map[string]string
+	AuthorizationURL       string            `json:"authorizationUrl,omitempty"`
+	DeviceAuthorizationURL string            `json:"deviceAuthorizationUrl,omitempty"`
+	TokenURL               string            `json:"tokenUrl,omitempty"`
+	RefreshURL             string            `json:"refreshUrl,omitempty"`
+	Scopes                 map[string]string `json:"scopes"`
 }

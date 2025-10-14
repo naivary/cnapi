@@ -80,14 +80,12 @@ func NewHeaderParam(name, desc string, required bool) *Parameter {
 	return param
 }
 
-func NewPathParam(name string, required bool) *Parameter {
+func NewPathParam(name string, s *Schema) *Parameter {
 	param := &Parameter{
 		Name:     name,
-		Required: required,
+		Required: true,
 		In:       PATH,
-		Schema: &Schema{
-			Type: StringType,
-		},
+		Schema:   s,
 	}
 	return param
 }

@@ -3,15 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/iancoleman/strcase"
 
 	"github.com/naivary/cnapi/openapi"
 )
-
-const _regExpPathParam = `(?m){([^\/{}]+)}`
 
 func GenOpenAPISpecs(root *openapi.OpenAPI, endpoints ...*Endpoint) error {
 	if root.Info == nil {
@@ -40,35 +37,12 @@ func genOpenAPISpecs(root *openapi.OpenAPI, endpoint *Endpoint) error {
 		return fmt.Errorf("incorrect pattern: %s", endpoint.Pattern)
 	}
 	method, path := patternSegments[0], patternSegments[1]
-	pathParams, err := pathParamsOf(path)
-	if err != nil {
-		return err
-	}
-	for _, pathParamName := range pathParams {
-		pathParam := openapi.NewPathParam(pathParamName, _required)
-		endpoint.Parameters = append(endpoint.Parameters, pathParam)
-	}
 	op, err := buildOperation(endpoint)
 	if err != nil {
 		return err
 	}
 	root.Paths[path] = openapi.NewPathItem(method, op)
 	return nil
-}
-
-func pathParamsOf(path string) ([]string, error) {
-	r, err := regexp.Compile(_regExpPathParam)
-	if err != nil {
-		return nil, err
-	}
-	matches := r.FindAllStringSubmatch(path, -1)
-	params := make([]string, 0, len(matches))
-	for _, m := range matches {
-		if len(m) > 1 {
-			params = append(params, m[1])
-		}
-	}
-	return params, nil
 }
 
 func buildOperation(endpoint *Endpoint) (*openapi.Operation, error) {
@@ -90,7 +64,7 @@ func buildOperation(endpoint *Endpoint) (*openapi.Operation, error) {
 }
 
 func schemaDefs() (map[string]*openapi.Schema, error) {
-	entries, err := os.ReadDir("api/schemas")
+	entries, err := os.ReadDir("api/openapi/schemas")
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +74,7 @@ func schemaDefs() (map[string]*openapi.Schema, error) {
 			continue
 		}
 		filename := entry.Name()
-		ref := fmt.Sprintf("../schemas/%s", filename)
+		ref := fmt.Sprintf("./schemas/%s", filename)
 		typeName := strcase.ToCamel(strings.Split(filename, ".")[0])
 		schemas[typeName] = &openapi.Schema{Ref: ref}
 	}

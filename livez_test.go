@@ -33,7 +33,6 @@ func TestLivez(t *testing.T) {
 		t.FailNow()
 	}
 
-	cl := &http.Client{}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			r, err := http.NewRequest(http.MethodGet, endpoint, nil)
@@ -41,7 +40,7 @@ func TestLivez(t *testing.T) {
 				t.Errorf("new request: %s", err)
 				t.FailNow()
 			}
-			res, err := cl.Do(r)
+			res, err := http.DefaultClient.Do(r)
 			if err != nil {
 				t.Errorf("do request: %s", err)
 				t.FailNow()

@@ -11,9 +11,10 @@ const (
 	_optional = false
 )
 
+// +openapi:schema:title="create metric response model"
 type CreateMetricResponse struct{}
 
-// +openapi:schema:description="something"
+// +openapi:schema:title="create metric request model"
 type CreateMetricRequest struct {
 	// +openapi:schema:required
 	Name string
@@ -28,7 +29,7 @@ func metrics() http.Handler {
 		Error:       defaultErrorHandler(),
 		Pattern:     "GET /metrics/{definition}",
 		Summary:     "Get the metrics of the documetnation",
-		Description: "<required>",
+		Description: "something",
 		Tags:        []string{"metrics"},
 		OperationID: "<name of the method if empty>",
 		RequestBody: openapi.NewReqBody("", false, new(CreateMetricRequest)),
@@ -39,6 +40,7 @@ func metrics() http.Handler {
 			"404": openapi.NewResponse("", nil),
 		},
 		Parameters: []*openapi.Parameter{
+			openapi.NewPathParam("definition", openapi.StringParameter),
 			openapi.NewQueryParam("id", "", _required),
 		},
 	}

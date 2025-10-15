@@ -37,7 +37,7 @@ func run(
 ) error {
 	// initialize dependencies
 	logger := newLogger(nil)
-	err := GenOpenAPISpecs(openAPISpec(), metrics())
+	err := GenOpenAPISpecs(openAPISpec())
 	if err != nil {
 		return err
 	}

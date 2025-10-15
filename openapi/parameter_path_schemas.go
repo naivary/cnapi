@@ -12,3 +12,10 @@ var UUIDParameter = &Schema{
 	Type:   StringType,
 	Format: "uuid",
 }
+
+func RegExpParam(pattern string) *Schema {
+	return &Schema{
+		Type:    StringType,
+		Pattern: pattern,
+	}
+}

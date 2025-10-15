@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -10,22 +13,23 @@ import (
 	"github.com/naivary/cnapi/openapi"
 )
 
-func GenOpenAPISpecs(root *openapi.OpenAPI, endpoints ...*Endpoint) error {
+func GenOpenAPISpecs(root *openapi.OpenAPI, endpoints ...*Endpoint) (io.Reader, error) {
 	if root.Info == nil {
-		return fmt.Errorf("nil info: OpenAPI.Info is required")
+		return nil, fmt.Errorf("nil info: OpenAPI.Info is required")
 	}
 	schemas, err := schemaDefs()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	root.Components.Schemas = schemas
 	for _, endpoint := range endpoints {
 		err := genOpenAPISpecs(root, endpoint)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	data, err := json.Marshal(&root)
+	return bytes.NewReader(data), err
 }
 
 func genOpenAPISpecs(root *openapi.OpenAPI, endpoint *Endpoint) error {

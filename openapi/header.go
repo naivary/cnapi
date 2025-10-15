@@ -12,10 +12,11 @@ type Header struct {
 	Content     map[string]*MediaType `json:"content,omitempty"`
 }
 
-func NewHeader(desc string, required bool) *Header {
+func NewHeader(desc string, required bool, s *Schema) *Header {
 	h := &Header{
 		Description: desc,
 		Required:    required,
+		Schema:      s,
 	}
 	return h
 }

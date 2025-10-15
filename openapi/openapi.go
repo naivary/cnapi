@@ -37,37 +37,15 @@ type OpenAPI struct {
 	ExternalDocs      *ExternalDoc           `json:"externalDocs,omitempty"`
 }
 
-func New(info *Info) *OpenAPI {
+func New(openAPIVersion, contactName, email string, license LicenseKeyword) *OpenAPI {
 	return &OpenAPI{
-		Version: "3.2.0",
-		Info:    info,
+		Version: openAPIVersion,
+		Info:    newInfo(contactName, email, license),
 		Paths:   make(map[string]*PathItem),
 		Components: &Components{
 			Schemas: make(map[string]*Schema),
 		},
 	}
-}
-
-type Info struct {
-	Version        string   `json:"version"`
-	Title          string   `json:"title"`
-	Summary        string   `json:"summary,omitempty"`
-	Description    string   `json:"description,omitempty"`
-	TermsOfService string   `json:"termsOfService,omitempty"`
-	Contact        *Contact `json:"contact,omitempty"`
-	License        *License `json:"license,omitempty"`
-}
-
-type Contact struct {
-	Name  string `json:"name,omitempty"`
-	URL   string `json:"url,omitempty"`
-	Email string `json:"email,omitempty"`
-}
-
-type License struct {
-	Name       string `json:"name"`
-	Identifier string `json:"identifier,omitempty"`
-	URL        string `json:"url,omitempty"`
 }
 
 type Server struct {
@@ -114,7 +92,7 @@ type Example struct {
 }
 
 type MediaType struct {
-	Schema         *Schema              `json:"schema,omitempty"`
+	Schema         *Schema              `json:"schema,omitempty,omitzero"`
 	ItemSchema     *Schema              `json:"itemSchema,omitempty"`
 	Example        any                  `json:"example,omitempty"`
 	Examples       map[string]*Example  `json:"examples,omitempty"`

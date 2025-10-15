@@ -1,19 +1,19 @@
 package openapi
 
-var StringParameter = &Schema{
+var StringSchema = &Schema{
 	Type: StringType,
 }
 
-var IntegerParameter = &Schema{
+var IntegerSchema = &Schema{
 	Type: IntegerType,
 }
 
-var UUIDParameter = &Schema{
+var UUIDSchema = &Schema{
 	Type:   StringType,
 	Format: "uuid",
 }
 
-func RegExpParam(pattern string) *Schema {
+func RegExpSchema(pattern string) *Schema {
 	return &Schema{
 		Type:    StringType,
 		Pattern: pattern,

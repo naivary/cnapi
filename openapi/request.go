@@ -9,12 +9,16 @@ type RequestBody struct {
 }
 
 func NewReqBody(desc string, required bool, model any) *RequestBody {
+	var s *Schema
+	if model != nil {
+		s = &Schema{Ref: reflect.TypeOf(model).Name()}
+	}
 	req := &RequestBody{
 		Description: desc,
 		Required:    required,
 		Content: map[string]*MediaType{
-			"application/json": &MediaType{
-				Schema: &Schema{Ref: reflect.TypeOf(model).Name()},
+			"application/json": {
+				Schema: s,
 			},
 		},
 	}

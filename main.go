@@ -10,7 +10,15 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/naivary/cnapi/openapi"
 )
+
+func openAPISpec() *openapi.OpenAPI {
+	const openAPIVersion = "3.2.0"
+	spec := openapi.New(openAPIVersion, "cnapi", "info@cnapi.com", openapi.MIT)
+	return spec
+}
 
 func main() {
 	ctx := context.Background()
@@ -27,7 +35,14 @@ func run(
 	stdin io.Reader,
 	stdout, stderr io.Writer,
 ) error {
+	// initialize dependencies
 	logger := newLogger(nil)
+	err := GenOpenAPISpecs(openAPISpec(), metrics())
+	if err != nil {
+		return err
+	}
+
+	// start he server with graceful handling
 	interuptCtx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 	host, port := getenv("HOST"), getenv("PORT")
@@ -47,7 +62,7 @@ func run(
 
 	// wait for interrupt signal for graceful shutdown procedure
 	<-interuptCtx.Done()
-	logger.Info("Interrupt signal received. Gracefully shutting down server.")
+	logger.Info("Interrupt signal received. Gracefully shutting down server")
 	cancel() // instantly stop the application on further interrupt signals
 
 	// new context to have a finite shutdown time

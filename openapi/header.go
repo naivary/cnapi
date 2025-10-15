@@ -25,3 +25,8 @@ func (h *Header) Deprecate() *Header {
 	h.Deprecated = true
 	return h
 }
+
+func (h *Header) AddExample(exp any) *Header {
+	h.Example = exp
+	return h
+}

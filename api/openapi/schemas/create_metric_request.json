@@ -1,5 +1,5 @@
 {
-  "$id": "create_metric_request.json",
+  "$id": "https://raw.githubusercontent.com/naivary/cnapi/refs/heads/main/api/openapi/schemas/create_metric_request.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "title": "create metric request model",

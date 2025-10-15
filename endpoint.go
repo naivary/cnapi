@@ -35,7 +35,14 @@ type Endpoint struct {
 	// Deprecated flags an endpoint as deprecated in the OpenAPI documentation.
 	Deprecated bool
 
-	Parameters  []*openapi.Parameter
+	// Parameters defines teh required and optional parameters for this
+	// endpoint. Parameters might be in Cookies, Headers, Queries and Path. Path
+	// parameters cannot be generated automatically without breaking the
+	// standard patter notation of the http package. Thats why you have to
+	// define them by yourself using the helper functions.
+	Parameters []*openapi.Parameter
+
+	// RequestBody of the Endpoint.
 	RequestBody *openapi.RequestBody
 	Responses   map[string]*openapi.Response
 	Security    openapi.SecurityRequirement

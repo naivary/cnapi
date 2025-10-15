@@ -138,54 +138,54 @@ const (
 
 type Schema struct {
 	// metadata
-	ID    string   `json:"$id,omitzero"`
-	Draft string   `json:"$schema,omitzero"`
-	Ref   string   `json:"$ref,omitzero"`
-	Type  JSONType `json:"type,omitzero"`
+	ID    string   `json:"$id,omitempty"`
+	Draft string   `json:"$schema,omitempty"`
+	Ref   string   `json:"$ref,omitempty"`
+	Type  JSONType `json:"type,omitempty"`
 
-	OneOf []*Schema `json:"oneOf,omitzero"`
-	AnyOf []*Schema `json:"anyOf,omitzero"`
-	Not   *Schema   `json:"not,omitzero"`
+	OneOf []*Schema `json:"oneOf,omitempty"`
+	AnyOf []*Schema `json:"anyOf,omitempty"`
+	Not   *Schema   `json:"not,omitempty"`
 
 	// agnostic
-	Enum []any `json:"enum,omitzero"`
+	Enum []any `json:"enum,omitempty"`
 
 	// annotations
-	Title      string `json:"title,omitzero"`
-	Desc       string `json:"description,omitzero"`
-	Examples   []any  `json:"examples,omitzero"`
-	Deprecated bool   `json:"deprecated,omitzero"`
-	WriteOnly  bool   `json:"writeOnly,omitzero"`
-	ReadOnly   bool   `json:"readOnly,omitzero"`
-	Default    string `json:"default,omitzero"`
+	Title      string `json:"title,omitempty"`
+	Desc       string `json:"description,omitempty"`
+	Examples   []any  `json:"examples,omitempty"`
+	Deprecated bool   `json:"deprecated,omitempty"`
+	WriteOnly  bool   `json:"writeOnly,omitempty"`
+	ReadOnly   bool   `json:"readOnly,omitempty"`
+	Default    string `json:"default,omitempty"`
 
 	// array
-	MaxItems    int64   `json:"maxItems,omitzero"`
-	MinItems    int64   `json:"minItems,omitzero"`
-	UniqueItems bool    `json:"uniqueItems,omitzero"`
-	Items       *Schema `json:"items,omitzero"`
+	MaxItems    int64   `json:"maxItems,omitempty"`
+	MinItems    int64   `json:"minItems,omitempty"`
+	UniqueItems bool    `json:"uniqueItems,omitempty"`
+	Items       *Schema `json:"items,omitempty"`
 
 	// object
-	Properties           map[string]*Schema  `json:"properties,omitzero"`
-	Required             []string            `json:"required,omitzero"`
-	AdditionalProperties *Schema             `json:"additionalProperties,omitzero"`
-	PatternProperties    map[string]*Schema  `json:"patternProperties,omitzero,omitempty"`
-	DependentRequired    map[string][]string `json:"dependentRequired,omitzero,omitempty"`
+	Properties           map[string]*Schema  `json:"properties,omitempty"`
+	Required             []string            `json:"required,omitempty"`
+	AdditionalProperties *Schema             `json:"additionalProperties,omitempty"`
+	PatternProperties    map[string]*Schema  `json:"patternProperties,omitempty"`
+	DependentRequired    map[string][]string `json:"dependentRequired,omitempty"`
 
 	// string
-	MinLength        int64  `json:"minLength,omitzero"`
-	MaxLength        int64  `json:"maxLength,omitzero"`
-	Pattern          string `json:"pattern,omitzero"`
-	ContentEncoding  string `json:"contentEnconding,omitzero"`
-	ContentMediaType string `json:"contentMediaType,omitzero"`
-	Format           string `json:"format,omitzero"`
+	MinLength        int64  `json:"minLength,omitempty"`
+	MaxLength        int64  `json:"maxLength,omitempty"`
+	Pattern          string `json:"pattern,omitempty"`
+	ContentEncoding  string `json:"contentEnconding,omitempty"`
+	ContentMediaType string `json:"contentMediaType,omitempty"`
+	Format           string `json:"format,omitempty"`
 
 	// number
-	Maximum          int64 `json:"maximum,omitzero"`
-	Minimum          int64 `json:"minimum,omitzero"`
-	ExclusiveMaximum int64 `json:"exclusiveMaximum,omitzero"`
-	ExclusiveMinimum int64 `json:"exclusiveMinimum,omitzero"`
-	MultipleOf       int64 `json:"multipleOf,omitzero"`
+	Maximum          int64 `json:"maximum,omitempty"`
+	Minimum          int64 `json:"minimum,omitempty"`
+	ExclusiveMaximum int64 `json:"exclusiveMaximum,omitempty"`
+	ExclusiveMinimum int64 `json:"exclusiveMinimum,omitempty"`
+	MultipleOf       int64 `json:"multipleOf,omitempty"`
 }
 
 type Encoding struct {

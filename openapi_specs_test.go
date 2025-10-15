@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"os"
 	"testing"
 
@@ -29,10 +30,17 @@ func TestGenOpenAPISpec(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			err := GenOpenAPISpecs(tc.root, tc.h)
-			t.Log(err)
-			jerr := json.NewEncoder(os.Stdout).Encode(&tc.root)
-			t.Log(jerr)
+			r, err := GenOpenAPISpecs(tc.root, tc.h)
+			if err != nil {
+				t.Errorf("generating open API specs: %v", err)
+				t.FailNow()
+			}
+			err = json.NewEncoder(os.Stdout).Encode(&tc.root)
+			if err != nil {
+				t.Errorf("json encode: %v", err)
+				t.FailNow()
+			}
+			io.Copy(os.Stdout, r)
 		})
 	}
 }

@@ -1,0 +1,92 @@
+{
+  "openapi": "3.2.0",
+  "info": {
+    "version": "",
+    "title": "",
+    "contact": {
+      "name": "cnapi",
+      "email": "info@cnapi.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "paths": {
+    "/metrics/{definition}": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Get the metrics of the documetnation",
+        "description": "something",
+        "parameters": [
+          {
+            "name": "definition",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "headers": {
+              "h1": {
+                "description": "something",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "h2": {
+                "description": "someting",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMetricRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateMetricRequest": {
+        "$ref": "./schemas/create_metric_request.json"
+      },
+      "CreateMetricResponse": {
+        "$ref": "./schemas/create_metric_response.json"
+      }
+    }
+  }
+}

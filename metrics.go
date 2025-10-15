@@ -20,7 +20,7 @@ type CreateMetricRequest struct {
 	Name string
 }
 
-func metrics() http.Handler {
+func metrics() *Endpoint {
 	fn := HandlerFuncErr(func(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	})
@@ -31,16 +31,16 @@ func metrics() http.Handler {
 		Summary:     "Get the metrics of the documetnation",
 		Description: "something",
 		Tags:        []string{"metrics"},
-		OperationID: "<name of the method if empty>",
+		OperationID: "metrics",
 		RequestBody: openapi.NewReqBody("", false, new(CreateMetricRequest)),
 		Responses: map[string]*openapi.Response{
 			"200": openapi.NewResponse("", new(CreateMetricRequest)).
-				AddHeader("", openapi.NewHeader("", _optional)).
-				AddHeader("", openapi.NewHeader("", _optional)),
-			"404": openapi.NewResponse("", nil),
+				AddHeader("h1", openapi.NewHeader("something", _optional, openapi.StringSchema)).
+				AddHeader("h2", openapi.NewHeader("someting", _optional, openapi.StringSchema)),
+			"404": openapi.NewResponse("", new(HTTPError)),
 		},
 		Parameters: []*openapi.Parameter{
-			openapi.NewPathParam("definition", openapi.StringParameter),
+			openapi.NewPathParam("definition", openapi.StringSchema),
 			openapi.NewQueryParam("id", "", _required),
 		},
 	}

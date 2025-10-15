@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io"
 	"os"
 	"testing"
 
@@ -17,7 +16,7 @@ func TestGenOpenAPISpec(t *testing.T) {
 	}{
 		{
 			name: "pattern param queries",
-			root: openapi.New(&openapi.Info{Version: "", Title: ""}),
+			root: openapi.New("3.2.0", "", "", openapi.Apache),
 			h: &Endpoint{
 				Pattern:     "GET /path/{p1}/{p2}",
 				OperationID: "testFunc",
@@ -30,7 +29,7 @@ func TestGenOpenAPISpec(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			r, err := GenOpenAPISpecs(tc.root, tc.h)
+			err := GenOpenAPISpecs(tc.root, tc.h)
 			if err != nil {
 				t.Errorf("generating open API specs: %v", err)
 				t.FailNow()
@@ -40,7 +39,6 @@ func TestGenOpenAPISpec(t *testing.T) {
 				t.Errorf("json encode: %v", err)
 				t.FailNow()
 			}
-			io.Copy(os.Stdout, r)
 		})
 	}
 }

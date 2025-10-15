@@ -14,12 +14,16 @@ func NewResRef(ref string) *Response {
 }
 
 func NewResponse(desc string, model any) *Response {
+	var s *Schema
+	if model != nil {
+		s = &Schema{Ref: componentRef("schemas", typeName(model))}
+	}
 	res := &Response{
 		Description: desc,
 		Headers:     make(map[string]*Header),
 		Content: map[string]*MediaType{
 			"application/json": {
-				Schema: &Schema{Ref: componentRef("schemas", typeName(model))},
+				Schema: s,
 			},
 		},
 		Links: make(map[string]*Link),
